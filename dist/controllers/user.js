@@ -17,14 +17,11 @@ const user_1 = __importDefault(require("../models/user"));
 const notes_1 = __importDefault(require("../models/notes"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-/*
-
-const generateToken = (userId: string) => {
-    return jwt.sign({ userId }, process.env.JWT_SECRET_KEY || '', {
-      expiresIn: "1h", // Token expires in 1 hour
+const generateToken = (userId) => {
+    return jsonwebtoken_1.default.sign({ userId }, process.env.JWT_SECRET_KEY || "", {
+        expiresIn: "1h", // Token expires in 1 hour
     });
 };
-*/
 const secret = process.env.JWT_SECRET_KEY;
 const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { fullname, email, gender, phone, address, password } = req.body;
@@ -85,10 +82,10 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             bcrypt_1.default.compareSync(password, user.dataValues.password)) {
             const secret = process.env.secret;
             // create secret token for authenticated users
-            const token = jsonwebtoken_1.default.sign({
-                loginkey: user.dataValues.id,
-            }, secret, { expiresIn: "1d" });
-            return res.status(200).json({ status: "successful", token: token });
+            const token = generateToken(user.dataValues.id || "");
+            return res
+                .status(200)
+                .json({ status: "successful", token: token, user: user.dataValues });
         }
         else {
             // If passwords don't match, return an error

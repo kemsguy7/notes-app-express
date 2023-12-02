@@ -27,14 +27,13 @@ const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
         console.log(decoded);
         // Use Sequelize's findOne method to retrieve the user
         const user = yield user_1.default.findOne({
-            where: { id: decoded.loginkey },
+            where: { id: decoded.userId },
             attributes: ["id"],
         });
         if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         console.log(user);
-        // req.user = user; // Attach the user to the request for further use
         next();
     }
     catch (error) {

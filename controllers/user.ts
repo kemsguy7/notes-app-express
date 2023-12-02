@@ -6,14 +6,11 @@ import Note from "../models/notes";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-/*
-
 const generateToken = (userId: string) => {
-    return jwt.sign({ userId }, process.env.JWT_SECRET_KEY || '', {
-      expiresIn: "1h", // Token expires in 1 hour
-    });
+  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY || "", {
+    expiresIn: "1h", // Token expires in 1 hour
+  });
 };
-*/
 
 const secret: any = process.env.JWT_SECRET_KEY;
 
@@ -86,14 +83,10 @@ export const login: RequestHandler = async (req, res) => {
       const secret: any = process.env.secret;
       // create secret token for authenticated users
 
-      const token = jwt.sign(
-        {
-          loginkey: user.dataValues.id,
-        },
-        secret,
-        { expiresIn: "1d" }
-      );
-      return res.status(200).json({ status: "successful", token: token });
+      const token = generateToken(user.dataValues.id || "");
+      return res
+        .status(200)
+        .json({ status: "successful", token: token, user: user.dataValues });
     } else {
       // If passwords don't match, return an error
       return res

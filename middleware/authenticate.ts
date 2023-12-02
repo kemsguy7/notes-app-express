@@ -21,13 +21,13 @@ export const authenticate = async (
   try {
     const secret: Secret = process.env.JWT_SECRET_KEY as Secret; // Use Secret type for clarity
 
-    const decoded = jwt.verify(token, secret) as { loginkey: string };
+    const decoded = jwt.verify(token, secret) as { userId: string };
 
     console.log(decoded);
 
     // Use Sequelize's findOne method to retrieve the user
     const user = await User.findOne({
-      where: { id: decoded.loginkey },
+      where: { id: decoded.userId },
       attributes: ["id"],
     });
 
@@ -36,8 +36,6 @@ export const authenticate = async (
     }
 
     console.log(user);
-
-    // req.user = user; // Attach the user to the request for further use
     next();
   } catch (error) {
     console.error(error);

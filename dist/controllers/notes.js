@@ -14,14 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.updateNote = exports.findOne = exports.findAll = exports.createNote = void 0;
 const notes_1 = __importDefault(require("../models/notes"));
-const notes_2 = __importDefault(require("../models/notes"));
 const createNote = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description, duedate, status, userId } = req.body;
         console.log(title, description);
         //create a note
-        const note = yield notes_1.default.create({ title, description, duedate, status, userId });
-        res.status(201).json({ note: note });
+        const note = yield notes_1.default.create({
+            title,
+            description,
+            duedate,
+            status,
+            userId,
+        });
+        res.status(201).json({ note: note, status: "success" });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });
@@ -31,7 +36,9 @@ exports.createNote = createNote;
 const findAll = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const notes = yield notes_1.default.findAll();
-        res.status(200).json({ status: 'success', notes: notes_2.default });
+        res
+            .status(200)
+            .json({ status: "success", notes: notes, length: notes.length });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });
@@ -42,7 +49,7 @@ const findOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const id = req.params.id;
         const note = yield notes_1.default.findByPk(id);
-        res.status(200).json({ status: 'success', note });
+        res.status(200).json({ status: "success", note });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });
@@ -58,7 +65,7 @@ const updateNote = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         }
         yield note.update(Object.assign({}, req.body));
         yield note.save();
-        res.status(201).json({ user: note });
+        res.status(201).json({ user: note, status: "Note updated successfully" });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });

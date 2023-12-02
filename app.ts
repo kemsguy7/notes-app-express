@@ -1,7 +1,6 @@
 var createError = require("http-errors");
 
-import express from "express";
-
+import express, { Request, Response } from "express";
 import cors from "cors";
 
 import logger from "morgan";
@@ -13,11 +12,6 @@ import noteRoutes from "./routes/notes";
 import userRoutes from "./routes/users";
 
 var path = require("path");
-
-/*
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-*/
 
 const app = express();
 
@@ -32,20 +26,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("api/v1/auth", authRoutes); // Authentication routes
-app.use("api/v1/notes", noteRoutes); // Notes routes
-app.use("/api/v1users", userRoutes); // Users routes
+app.use("/api/v1/auth", authRoutes); // Authentication routes
+app.use("/api/v1/notes", noteRoutes); // Notes routes
+app.use("/api/v1/users", userRoutes); // Users routes
 
-app.get("/", () => {
-  console.log(`The application is running`);
+app.get("/", (req: Request, res: Response) => {
+  res.send(`The application is running`);
 });
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
 });
-
-dotenv.config(); // configure dotenv file
 
 // error handler
 
@@ -60,6 +52,5 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 */
-
 
 export default app;
