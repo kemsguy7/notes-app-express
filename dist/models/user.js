@@ -3,20 +3,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
 // models/User.ts
 const sequelize_1 = require("sequelize");
 const config_1 = __importDefault(require("./config"));
 const notes_1 = __importDefault(require("./notes"));
-const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
+const uuid_1 = require("uuid");
 class User extends sequelize_1.Model {
 }
-exports.User = User;
 User.init({
     id: {
-        type: sequelize_1.DataTypes.UUID, // Set the data type to UUID
-        defaultValue: () => uuidv4(), // Generate a UUID for new records
+        type: sequelize_1.DataTypes.UUID,
+        defaultValue: () => (0, uuid_1.v4)(),
         primaryKey: true,
     },
     fullname: {
@@ -45,9 +42,8 @@ User.init({
     },
 }, {
     sequelize: config_1.default,
-    modelName: 'User',
+    modelName: "User",
 });
-console.log(User == config_1.default.models.User);
-User.hasMany(notes_1.default, { foreignKey: 'userId' });
+User.hasMany(notes_1.default, { foreignKey: "userId" });
 notes_1.default.belongsTo(User);
 exports.default = User;

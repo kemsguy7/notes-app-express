@@ -1,30 +1,25 @@
 // models/User.ts
-import { Model, DataTypes } from 'sequelize';
-import sequelize from './config';
-import { HasManyCreateAssociationMixin } from 'sequelize';
-import Notes from './notes';
-const { v4: uuidv4 } = require('uuid');
-const bcrypt = require('bcrypt');
-
-
+import { Model, DataTypes } from "sequelize";
+import sequelize from "./config";
+import Notes from "./notes";
+import { UUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 // const sequelize = new Sequelize('sqlite::memory:');
 
-interface IUser{
-
-  fullname: string | undefined;
+export interface IUser {
+  fullname: string;
   email: string;
   gender: string;
-   phone: string | undefined;
-   address: string;
-  password: string; // Add password field
-   id: string;
-
+  phone: string;
+  address: string;
+  password: string;
+  id?: UUID;
 }
-export class User extends Model<IUser> {}
+
+class User extends Model<IUser> {}
 
 User.init(
-
   {
     id: {
       type: DataTypes.UUID, // Set the data type to UUID
@@ -58,18 +53,11 @@ User.init(
   },
   {
     sequelize,
-    modelName: 'User',
+    modelName: "User",
   }
 );
 
+User.hasMany(Notes, { foreignKey: "userId" });
+Notes.belongsTo(User);
 
-
-  console.log(User == sequelize.models.User);  
-  User.hasMany(Notes, { foreignKey: 'userId'});
-  Notes.belongsTo(User);
-
- 
-
-  export default User;
-
- 
+export default User;

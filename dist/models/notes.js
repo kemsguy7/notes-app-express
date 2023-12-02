@@ -14,8 +14,8 @@ class Note extends sequelize_1.Model {
 }
 Notes.init({
     id: {
-        type: sequelize_1.DataTypes.UUID, // Set the data type to UUID
-        defaultValue: () => uuidv4(), // Generate a UUID for new records
+        type: sequelize_1.DataTypes.UUID,
+        defaultValue: () => uuidv4(),
         primaryKey: true,
     },
     title: {
@@ -35,7 +35,7 @@ Notes.init({
         allowNull: false,
     },
     userId: {
-        type: sequelize_1.DataTypes.UUID, // Assuming userId is of type UUID
+        type: sequelize_1.DataTypes.UUID,
         allowNull: false,
         references: {
             model: user_1.default,

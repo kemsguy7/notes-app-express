@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.updateUser = exports.findSingle = exports.findAll = exports.login = void 0;
+exports.deleteUser = exports.updateUser = exports.findSingle = exports.findAll = exports.login = exports.signup = void 0;
 const user_1 = __importDefault(require("../models/user"));
 const notes_1 = __importDefault(require("../models/notes"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -26,19 +26,20 @@ const generateToken = (userId: string) => {
 };
 */
 const secret = process.env.JWT_SECRET_KEY;
-{
+const signup = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { fullname, email, gender, phone, address, password } = req.body;
     //password = req.body.password;
     try {
         //check if user already exists by checking to see if the email exists in our database already
-        const existingUser = await user_1.default.findOne({ where: { email } });
+        const existingUser = yield user_1.default.findOne({ where: { email } });
         if (existingUser) {
-            return res
-                .status(400)
-                .json({ status: "failed", message: "Email is already in use, try another email" });
+            return res.status(400).json({
+                status: "failed",
+                message: "Email is already in use, try another email",
+            });
         }
-        const hashedPassword = await bcrypt_1.default.hash(password, 10); //  salt round (10)
-        const newUser = await user_1.default.create({
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10); //  salt round (10)
+        const newUser = yield user_1.default.create({
             fullname,
             email,
             gender,
@@ -47,9 +48,7 @@ const secret = process.env.JWT_SECRET_KEY;
             password: hashedPassword,
         });
         if (!newUser) {
-            return res
-                .status(400)
-                .json({
+            return res.status(400).json({
                 status: "failed",
                 message: "Invalid details, account cannot be created",
             });
@@ -65,7 +64,8 @@ const secret = process.env.JWT_SECRET_KEY;
             .status(500)
             .json({ status: "error", message: "Internal server error" });
     }
-}
+});
+exports.signup = signup;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
     try {
@@ -88,8 +88,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const token = jsonwebtoken_1.default.sign({
                 loginkey: user.dataValues.id,
             }, secret, { expiresIn: "1d" });
-            return res
-                .status(200).json({ status: "successful", token: token });
+            return res.status(200).json({ status: "successful", token: token });
         }
         else {
             // If passwords don't match, return an error
@@ -109,7 +108,7 @@ exports.login = login;
 const findAll = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield user_1.default.findAll();
-        res.status(200).json({ status: 'success', users });
+        res.status(200).json({ status: "success", users });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });
@@ -123,7 +122,7 @@ const findSingle = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         const user = yield user_1.default.findByPk(id, {
             include: [{ model: notes_1.default }],
         });
-        res.status(200).json({ status: 'success', user });
+        res.status(200).json({ status: "success", user });
     }
     catch (error) {
         res.status(500).json({ message: "Failed", error });

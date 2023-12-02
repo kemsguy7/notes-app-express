@@ -13,32 +13,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticate = void 0;
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const user_1 = __importDefault(require("../models/user"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken")); // Import Secret type from jsonwebtoken
+const user_1 = __importDefault(require("../models/user")); // Correct casing for the file name
 const authenticate = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace('Bearer ', '');
+    const token = (_a = req.header("Authorization")) === null || _a === void 0 ? void 0 : _a.replace("Bearer ", "");
     if (!token) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({ message: "Unauthorized" }); // Remove unnecessary casting
     }
     try {
-        const secret = process.env.JWT_SECRET_KEY;
+        const secret = process.env.JWT_SECRET_KEY; // Use Secret type for clarity
         const decoded = jsonwebtoken_1.default.verify(token, secret);
         console.log(decoded);
         // Use Sequelize's findOne method to retrieve the user
         const user = yield user_1.default.findOne({
             where: { id: decoded.loginkey },
-            attributes: ['id'],
+            attributes: ["id"],
         });
         if (!user) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: "Unauthorized" });
         }
-        req.user = { id: user.dataValues.id }; // Attach the user to the request for further use
+        console.log(user);
+        // req.user = user; // Attach the user to the request for further use
         next();
     }
     catch (error) {
         console.error(error);
-        res.status(401).json({ message: 'error in authorization' });
+        res.status(401).json({ message: "Error in authorization" }); // Fix typo in the error message
     }
 });
 exports.authenticate = authenticate;

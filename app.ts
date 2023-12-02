@@ -1,23 +1,18 @@
-var createError = require('http-errors');
+var createError = require("http-errors");
 
-import userRouter from './routes/users'; 
+import express from "express";
 
-import noteRouter from './routes/notes'; 
+import cors from "cors";
 
-import express from 'express';
+import logger from "morgan";
+import cookieParser from "cookie-parser";
 
-import cors from 'cors';
+import dotenv from "dotenv";
+import authRoutes from "./routes/auth";
+import noteRoutes from "./routes/notes";
+import userRoutes from "./routes/users";
 
-import logger from 'morgan';
-import cookieParser from 'cookie-parser';
-
-import dotenv from 'dotenv';
-import sequelize from './models/config';
-import authRoutes from './routes/auth';
-import noteRoutes from './routes/notes';
-import userRoutes from './routes/users';
-
-var path = require('path');
+var path = require("path");
 
 /*
 var indexRouter = require('./routes/index');
@@ -27,25 +22,26 @@ var usersRouter = require('./routes/users');
 const app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
 
 app.use(cors());
-app.use(logger('dev'));
-app.use(express.json());  //this parses the body
+app.use(logger("dev"));
+app.use(express.json()); //this parses the body
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use('/auth', authRoutes); // Authentication routes
-app.use('/notes', noteRoutes); // Notes routes
-app.use('/users', userRoutes); // Users routes
+app.use("api/v1/auth", authRoutes); // Authentication routes
+app.use("api/v1/notes", noteRoutes); // Notes routes
+app.use("/api/v1users", userRoutes); // Users routes
 
-app.use('/', userRouter);
-app.use('/notes', noteRouter);
+app.get("/", () => {
+  console.log(`The application is running`);
+});
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
@@ -65,4 +61,5 @@ app.use(function(err, req, res, next) {
 });
 */
 
-export default app
+
+export default app;
